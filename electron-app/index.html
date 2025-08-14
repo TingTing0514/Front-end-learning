@@ -1,13 +1,47 @@
 <!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>electron App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>SDK 测试</title>
+</head>
+
+<body>
+    <h1>Electron JSSDK 安全版测试</h1>
+    <button id="btnRead">读取文件分片</button>
+    <button id="btnBrowserWindow">BrowserWindow 打开</button>
+    <button id="btnWebview">WebView 打开</button>
+    <div style="margin-top: 10px;" id="webviewContainer"></div>
+
+    <script>
+        const btnRead = document.getElementById('btnRead');
+        const btnBrowserWindow = document.getElementById('btnBrowserWindow');
+        const btnWebview = document.getElementById('btnWebview');
+        const container = document.getElementById('webviewContainer');
+
+        btnRead.onclick = async () => {
+            const res = await window.sdk.readFile({ filePath: '', range: [0, 1024] });
+            console.log('readFile:', res);
+        };
+
+        btnBrowserWindow.onclick = async () => {
+            const res = await window.sdk.openUrl({
+                url: 'https://www.google.com',
+                options: { type: 'browserwindow' }
+            });
+            console.log('openUrl:', res);
+        };
+
+        btnWebview.onclick = async () => {
+            await window.sdk.openUrl({
+                url: 'https://www.google.com',
+                options: { type: 'webview' }
+            });
+        };
+        window.sdk.onOpenWebview((url) => {
+            container.innerHTML = `<webview src="${url}" style="width:100%;height:600px" allowpopups></webview>`;
+        });
+    </script>
+</body>
+
 </html>
